@@ -7,6 +7,7 @@ const booksSchema = mongoose.Schema({
     author: {type: mongoose.Schema.Types.Mixed, required: true},
     publisher: {type: mongoose.Schema.Types.Mixed, required: true},
     link_img: {type: mongoose.Schema.Types.Mixed, required: true},
+    date_added: {type: mongoose.Schema.Types.Mixed, required: true},
     link_dl: {type: mongoose.Schema.Types.Mixed, required: true}
 })
 
