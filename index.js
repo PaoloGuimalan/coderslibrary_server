@@ -93,3 +93,16 @@ app.get("/allcontents", (req, res) => {
     })
 
 })
+
+app.get('/categoryList/:categoryName', (req, res) => {
+    const category = req.params.categoryName;
+
+    Books.find({category: category}, (err, result) => {
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.send(result);
+        }
+    })
+})
