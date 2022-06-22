@@ -110,7 +110,7 @@ app.get('/categoryList/:categoryName', (req, res) => {
 app.post('/searchCategory', (req, res) => {
     const searchValue = req.body.searchCategoryValue;
 
-    Categories.find({ category: searchValue }, (err, result) => {
+    Categories.find({ category: { $regex: '.*' + searchValue + '.*' } }, (err, result) => {
         if(err){
             console.log(err);
         }
@@ -123,7 +123,7 @@ app.post('/searchCategory', (req, res) => {
 app.post('/searchBooks', (req, res) => {
     const searchValue = req.body.searchBooksValue;
 
-    Books.find({ name: searchValue }, (err, result) => {
+    Books.find({ name: { $regex: '.*' + searchValue + '.*' } }, (err, result) => {
         if(err){
             console.log(err);
         }
