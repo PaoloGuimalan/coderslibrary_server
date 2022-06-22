@@ -106,3 +106,29 @@ app.get('/categoryList/:categoryName', (req, res) => {
         }
     })
 })
+
+app.get('/searchCategory/:searchCatValue', (req, res) => {
+    const searchValue = req.params.searchCatValue;
+
+    Categories.find({ category: searchValue }, (err, result) => {
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.send(result)
+        }
+    })
+})
+
+app.get('/searchBooks/:searchBooksValue', (req, res) => {
+    const searchValue = req.params.searchBooksValue;
+
+    Books.find({ name: searchValue }, (err, result) => {
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.send(result)
+        }
+    })
+})
