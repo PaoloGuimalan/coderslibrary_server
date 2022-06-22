@@ -107,8 +107,8 @@ app.get('/categoryList/:categoryName', (req, res) => {
     })
 })
 
-app.get('/searchCategory/:searchCatValue', (req, res) => {
-    const searchValue = req.params.searchCatValue;
+app.post('/searchCategory', (req, res) => {
+    const searchValue = req.body.searchCategoryValue;
 
     Categories.find({ category: searchValue }, (err, result) => {
         if(err){
@@ -120,8 +120,8 @@ app.get('/searchCategory/:searchCatValue', (req, res) => {
     })
 })
 
-app.get('/searchBooks/:searchBooksValue', (req, res) => {
-    const searchValue = req.params.searchBooksValue;
+app.post('/searchBooks', (req, res) => {
+    const searchValue = req.body.searchBooksValue;
 
     Books.find({ name: searchValue }, (err, result) => {
         if(err){
