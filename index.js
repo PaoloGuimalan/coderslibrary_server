@@ -4,8 +4,29 @@ const PORT = process.env.PORT || 3001
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const nodemailer = require("nodemailer")
 
 const connectionMongo = require("./connection/index")
+
+const accountTransport = nodemailer.createTransport({
+    service: "gmail",
+    secure: true,
+    auth:{
+        user: "coderslibrary.netlify.app@gmail.com",
+        pass: "hsjxkumafjrhvezw"
+    }
+})
+
+function makeid(length) {
+    var result           = '';
+    var characters       = '0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * 
+ charactersLength));
+   }
+   return result;
+}
 
 app.use(bodyParser.urlencoded({extended: false }));
 app.use(bodyParser.json());
@@ -131,4 +152,31 @@ app.post('/searchBooks', (req, res) => {
             res.send(result)
         }
     })
+})
+
+app.post('/sendMailCode', (req, res) => {
+    const emailAddress = req.body.email;
+    const codeGenerated = makeid(8);
+
+    const mailOptions = {
+        from: 'Coder\'s Library',
+        to: emailAddress,
+        subject: 'Register Verification Code',
+        text: `Your registration code for your email is ${codeGenerated}`
+    }
+
+    if(emailAddress == "" || emailAddress == null){
+        res.send({status: false, message: "Email Invalid"})
+    }
+    else{
+        accountTransport.sendMail(mailOptions, (err, info) => {
+            if(err){
+                // console.log(err);
+                res.send({status: false, message: "Verification Code generation failed!"})
+            }
+            else{
+                res.send({status: true, message: "Verification Code has been Sent!", code: codeGenerated })
+            }
+        })
+    }
 })
