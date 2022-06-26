@@ -39,6 +39,7 @@ app.use(cors({
 
 const Categories = require("./schemas/categories");
 const Books = require("./schemas/books");
+const Accounts = require("./schemas/accounts");
 const e = require("express");
 
 async function connectMongo(){
@@ -179,4 +180,63 @@ app.post('/sendMailCode', (req, res) => {
             }
         })
     }
+})
+
+app.post('/createAccount', (req, res) => {
+    // res.send(req.body)
+    const firstName = req.body.firstName;
+    const lastName = req.body.lastName;
+    const email = req.body.email;
+    const password = req.body.password;
+    const userNameInit = firstName.split(" ").join("")
+    var userNameRes = `${userNameInit}_${makeid(5)}`
+
+    // res.write(userNameRes)
+
+    const createAccountInit = (dataUserName) => {
+        const newAccount = new Accounts({
+            userName: dataUserName,
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            password: password
+        })
+
+        newAccount.save().then(() => {
+            res.send({status: true, message: "You have been Successfully Registered!"})
+        }).catch((err) => {
+            console.log(err);
+            res.send({status: false, message: "Cannot Successfully Register!"});
+        })
+    }
+
+    Accounts.find({email: email}, (err, result) => {
+        if(err){
+            console.log(err)
+        }
+        else{
+            if(result.length != 0){
+                res.send({statue: false, message: "Email already used!"});
+            }
+            else{
+                // res.send(true);
+                Accounts.find({userName: userNameRes}, (err2, result2) => {
+                    if(err2){
+                        console.log(err2)
+                    }
+                    else{
+                        if(result2.length != 0){
+                            userNameRes = `${userNameInit}_${makeid(5)}`
+                            // res.send(userNameRes);
+                            createAccountInit(userNameRes)
+                        }
+                        else{
+                            // res.send(userNameRes)
+                            createAccountInit(userNameRes)
+                        }
+                    }
+                })
+            }
+        }
+    })
 })
