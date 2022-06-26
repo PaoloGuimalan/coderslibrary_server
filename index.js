@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const nodemailer = require("nodemailer")
+const jwt = require("jsonwebtoken")
 
 const connectionMongo = require("./connection/index")
 
@@ -236,6 +237,33 @@ app.post('/createAccount', (req, res) => {
                         }
                     }
                 })
+            }
+        }
+    })
+})
+
+app.post('/userLogin', (req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
+
+    Accounts.findOne({email: email, password: password}, (err, result) => {
+        if(err){
+            // console.log(err);
+            res.send({status: false, message: "Unable to Login!"})
+        }
+        else{
+            // console.log(result);
+            // res.send(result.userName)
+            if(result != null){
+                // res.send(result.userName)
+                const userNameLogin = result.userName;
+                const token = jwt.sign({userNameLogin}, "coderslibraryserver", {
+                    expiresIn: 60 * 60 * 24 * 7
+                })
+                res.send({status: true, message: "Login Successful!", token: token});
+            }
+            else{
+                res.send({status: false, message: "Account do not match!"})
             }
         }
     })
