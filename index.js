@@ -216,7 +216,7 @@ app.post('/createAccount', (req, res) => {
         }
         else{
             if(result.length != 0){
-                res.send({statue: false, message: "Email already used!"});
+                res.send({status: false, message: "Email already used!"});
             }
             else{
                 // res.send(true);
