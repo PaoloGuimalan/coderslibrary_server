@@ -260,7 +260,7 @@ app.post('/userLogin', (req, res) => {
                 const token = jwt.sign({userNameLogin}, "coderslibraryserver", {
                     expiresIn: 60 * 60 * 24 * 7
                 })
-                res.send({status: true, message: "Login Successful!", token: token});
+                res.send({status: true, message: "Login Successful!", token: token, userName: userNameLogin});
             }
             else{
                 res.send({status: false, message: "Account do not match!"})
