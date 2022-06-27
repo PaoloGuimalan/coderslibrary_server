@@ -56,6 +56,27 @@ const server_app = app.listen(PORT, () => {
     })
 });
 
+const jwtverifier = (req, res, next) => {
+    const token = req.headers["x-access-token"];
+
+    if(!token || token == ""){
+        res.send({status: false, message: "No Token Received!"})
+    }
+    else{
+        jwt.verify(token, "coderslibraryserver", (err, decode) => {
+            if(err){
+                res.send({status: false, message: "Token Denied!"})
+            }
+            else{
+                // res.send(decode);
+                req.params.userName = decode.userNameLogin;
+                req.params.token = token;
+                next()
+            }
+        })
+    }
+}
+
 app.get('/categories', (req, res) => {
 
     Categories.find({}, (err, result) => {
@@ -267,4 +288,9 @@ app.post('/userLogin', (req, res) => {
             }
         }
     })
+})
+
+app.get('/loginVerifier', jwtverifier, (req, res) => {
+    res.send({status: true, userName: req.params.userName, token: req.params.token})
+    // res.send(req.params.token)
 })
