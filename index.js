@@ -41,6 +41,7 @@ app.use(cors({
 const Categories = require("./schemas/categories");
 const Books = require("./schemas/books");
 const Accounts = require("./schemas/accounts");
+const Recents = require("./schemas/recents");
 const e = require("express");
 
 async function connectMongo(){
@@ -293,4 +294,16 @@ app.post('/userLogin', (req, res) => {
 app.get('/loginVerifier', jwtverifier, (req, res) => {
     res.send({status: true, userName: req.params.userName, token: req.params.token})
     // res.send(req.params.token)
+})
+
+app.post('/addRecents', jwtverifier, (req, res) => {
+    const book_id = req.body.book_id;
+    const userName = req.params.userName;
+
+    const newRecord = new Recents({
+        userName: userName,
+        bookID: book_id
+    })
+
+    newRecord.save()
 })
