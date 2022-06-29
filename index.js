@@ -307,3 +307,16 @@ app.post('/addRecents', jwtverifier, (req, res) => {
 
     newRecord.save()
 })
+
+app.get('/userRecentsList', jwtverifier, (req, res) => {
+    const userName = req.params.userName;
+
+    Recents.find({userName: userName}, (err, response) => {
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.send(response);
+        }
+    })
+})
