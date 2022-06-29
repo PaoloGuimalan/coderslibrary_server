@@ -320,3 +320,17 @@ app.get('/userRecentsList', jwtverifier, (req, res) => {
         }
     })
 })
+
+app.get('/userProfileDetails', jwtverifier, (req, res) => {
+    const userName = req.params.userName;
+
+    Accounts.findOne({userName: userName}, (err, result) => {
+        if(err){
+            console.log(err)
+        }
+        else{
+            const { userName, firstName, lastName, email } = result;
+            res.send({userName, firstName, lastName, email})
+        }
+    })
+})
