@@ -70,6 +70,7 @@ const jwtverifier = (req, res, next) => {
             }
             else{
                 // res.send(decode);
+                // console.log(token)
                 req.params.userName = decode.userNameLogin;
                 req.params.token = token;
                 next()
@@ -311,12 +312,24 @@ app.post('/addRecents', jwtverifier, (req, res) => {
 app.get('/userRecentsList', jwtverifier, (req, res) => {
     const userName = req.params.userName;
 
-    Recents.find({userName: userName}, (err, response) => {
+    Recents.find({userName: userName}, {bookID: 1}, (err, response) => {
         if(err){
             console.log(err);
         }
         else{
-            res.send(response);
+            let arr = [];
+            response.map((id) => {
+                arr.push(id.bookID)
+            })
+            // res.send(arr);
+            Books.find({id: arr}, (err2, result2) => {
+                if(err2){
+                    console.log(err2)
+                }
+                else{
+                    res.send(result2);
+                }
+            })
         }
     })
 })
