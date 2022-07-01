@@ -347,3 +347,16 @@ app.get('/userProfileDetails', jwtverifier, (req, res) => {
         }
     })
 })
+
+app.get('/getBookInfo/:bookID', jwtverifier, (req, res) => {
+    const bookID = req.params.bookID;
+
+    Books.findOne({id: bookID}, (err, result) => {
+        if(err){
+            console.log(err)
+        }
+        else{
+            res.send(result)
+        }
+    })
+})
