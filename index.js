@@ -42,6 +42,7 @@ const Categories = require("./schemas/categories");
 const Books = require("./schemas/books");
 const Accounts = require("./schemas/accounts");
 const Recents = require("./schemas/recents");
+const Saves = require("./schemas/saves")
 const e = require("express");
 
 async function connectMongo(){
@@ -358,5 +359,19 @@ app.get('/getBookInfo/:bookID', (req, res) => {
         else{
             res.send(result)
         }
+    })
+})
+
+app.post('/saveBook', jwtverifier, (req, res) => {
+    const bookID = req.body.bookID;
+    const userName = req.params.userName
+
+    const newSave = new Saves({
+        userName: userName,
+        bookID: bookID
+    })
+
+    newSave.save().then(() => {
+        res.send({status: true, message: "Book has been Saved!"});
     })
 })
