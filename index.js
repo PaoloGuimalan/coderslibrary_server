@@ -427,8 +427,9 @@ app.post('/postComment', jwtverifier, (req, res) => {
     const hours = new Date().getHours();
     const minutes = new Date().getMinutes();
     const timezone = hours >= 12? "pm" : "am";
-    const hourConvert = hours > 12? hours - 12 : hours 
-    const timeposted = `${hourConvert}:${minutes} ${timezone}`
+    const hourConvert = hours > 12? hours - 12 : hours
+    const minuteConvert = minutes < 10? `0${minutes}` : minutes 
+    const timeposted = `${hourConvert}:${minuteConvert} ${timezone}`
 
     // res.send({userName, fullName, bookID, content, dateposted, timeposted})
     const newTag = new Tags({
