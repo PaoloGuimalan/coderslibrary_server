@@ -388,3 +388,18 @@ app.post('/saveBook', jwtverifier, (req, res) => {
         res.send({status: true, message: "Book has been Saved!"});
     })
 })
+
+app.get('/unsaveBook/:bookID', jwtverifier, (req, res) => {
+    const userName = req.params.userName
+    const bookID = req.params.bookID;
+
+    Saves.deleteOne({userName: userName, bookID: bookID}, (err, result) => {
+        if(err){
+            res.send({status: false, message: "Unable to Unsave Book!"})
+        }
+        else{
+            res.send({status: true, message: "Book has been Unsaved!"});
+        }
+    })
+
+})
