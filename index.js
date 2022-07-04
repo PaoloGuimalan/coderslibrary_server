@@ -42,7 +42,8 @@ const Categories = require("./schemas/categories");
 const Books = require("./schemas/books");
 const Accounts = require("./schemas/accounts");
 const Recents = require("./schemas/recents");
-const Saves = require("./schemas/saves")
+const Saves = require("./schemas/saves");
+const Tags = require("./schemas/tags");
 const e = require("express");
 
 async function connectMongo(){
@@ -402,4 +403,44 @@ app.get('/unsaveBook/:bookID', jwtverifier, (req, res) => {
         }
     })
 
+})
+
+function getDateReturn(){
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+    
+    var today_fixed = mm + '/' + dd + '/' + yyyy;
+
+    return today_fixed;
+}
+
+app.post('/postComment', jwtverifier, (req, res) => {
+    const userName = req.params.userName;
+
+    const fullName = req.body.fullName;
+    const bookID = req.body.bookID;
+    const content = req.body.content;
+    const dateposted = getDateReturn();
+
+    const hours = new Date().getHours();
+    const minutes = new Date().getMinutes();
+    const timezone = hours >= 12? "pm" : "am";
+    const hourConvert = hours > 12? hours - 12 : hours 
+    const timeposted = `${hourConvert}:${minutes} ${timezone}`
+
+    // res.send({userName, fullName, bookID, content, dateposted, timeposted})
+    const newTag = new Tags({
+        userName: userName, 
+        fullName: fullName, 
+        bookID: bookID, 
+        content: content, 
+        dateposted: dateposted, 
+        timeposted: timeposted
+    })
+
+    newTag.save().then(() => {
+        res.send({status: true, message: "Comment has been posted!"});
+    })
 })
