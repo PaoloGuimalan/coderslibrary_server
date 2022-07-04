@@ -445,3 +445,16 @@ app.post('/postComment', jwtverifier, (req, res) => {
         res.send({status: true, message: "Comment has been posted!"});
     })
 })
+
+app.get('/getComments/:bookID', (req, res) => {
+    const bookID = req.params.bookID
+
+    Tags.find({bookID: bookID}, (err, result) => {
+        if(err){
+            console.log(err)
+        }
+        else{
+            res.send(result)
+        }
+    })
+})
