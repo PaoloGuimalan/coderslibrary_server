@@ -349,15 +349,28 @@ app.get('/userProfileDetails', jwtverifier, (req, res) => {
     })
 })
 
-app.get('/getBookInfo/:bookID', (req, res) => {
+app.get('/getBookInfo/:bookID/:userName', (req, res) => {
     const bookID = req.params.bookID;
+    const userName = req.params.userName;
 
     Books.findOne({id: bookID}, (err, result) => {
         if(err){
             console.log(err)
         }
         else{
-            res.send(result)
+            if(userName){
+                Saves.findOne({userName: userName, bookID: bookID}, (err2, result2) => {
+                    if(err2){
+                        console.log(err2)
+                    }
+                    else{
+                        res.send({bookInfo: result, saveInfo: result2 == null? false : true})
+                    }
+                })
+            }
+            else{
+                res.send({bookInfo: result, saveInfo: false})
+            }
         }
     })
 })
