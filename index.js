@@ -422,6 +422,7 @@ app.post('/postComment', jwtverifier, (req, res) => {
     const fullName = req.body.fullName;
     const bookID = req.body.bookID;
     const content = req.body.content;
+    var contentMentionCheck = req.body.content;
     const dateposted = getDateReturn();
 
     const hours = new Date().getHours();
@@ -431,19 +432,61 @@ app.post('/postComment', jwtverifier, (req, res) => {
     const minuteConvert = minutes < 10? `0${minutes}` : minutes 
     const timeposted = `${hourConvert}:${minuteConvert} ${timezone}`
 
-    // res.send({userName, fullName, bookID, content, dateposted, timeposted})
-    const newTag = new Tags({
-        userName: userName, 
-        fullName: fullName, 
-        bookID: bookID, 
-        content: content, 
-        dateposted: dateposted, 
-        timeposted: timeposted
+    var mentionArr = []
+
+    const checkUser = (wordShiftFinal) => {
+        Accounts.findOne({userName: wordShiftFinal}, {userName: 1}, (err, result) => {
+            if(err){
+                console.log(err)
+            }
+            else{
+                // console.log(result)
+                if(result){
+                    // console.log(result.userName)
+                    mentionArr.push(result.userName)
+                }
+            }
+        })
+    }
+
+    contentMentionCheck.split(" ").map((wrd, i) => {
+        if(wrd.split("")[0] == "@"){
+            var wordShift = wrd.split("")
+            wordShift.shift()
+            var wordShiftFinal = wordShift.join("")
+            // mentionArr.push(wordShiftFinal)
+            checkUser(wordShiftFinal)
+        }
     })
 
-    newTag.save().then(() => {
-        res.send({status: true, message: "Comment has been posted!"});
-    })
+    setTimeout(() => {
+        const newTag = new Tags({
+            userName: userName, 
+            fullName: fullName, 
+            bookID: bookID, 
+            content: content,
+            mentions: mentionArr, 
+            dateposted: dateposted, 
+            timeposted: timeposted
+        })
+    
+        newTag.save().then(() => {
+            res.send({status: true, message: "Comment has been posted!"});
+        })
+    }, 1000)
+    
+    // const newTag = new Tags({
+    //     userName: userName, 
+    //     fullName: fullName, 
+    //     bookID: bookID, 
+    //     content: content, 
+    //     dateposted: dateposted, 
+    //     timeposted: timeposted
+    // })
+
+    // newTag.save().then(() => {
+    //     res.send({status: true, message: "Comment has been posted!"});
+    // })
 })
 
 app.get('/getComments/:bookID', (req, res) => {

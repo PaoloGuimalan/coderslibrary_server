@@ -4,7 +4,8 @@ const tagsSchema = mongoose.Schema({
     userName: {type: mongoose.Schema.Types.Mixed, required: true}, 
     fullName: {type: mongoose.Schema.Types.Mixed, required: true}, 
     bookID: {type: mongoose.Schema.Types.Mixed, required: true}, 
-    content: {type: mongoose.Schema.Types.Mixed, required: true}, 
+    content: {type: mongoose.Schema.Types.Mixed, required: true},
+    mentions: {type: Array, required: true}, 
     dateposted: {type: mongoose.Schema.Types.Mixed, required: true}, 
     timeposted: {type: mongoose.Schema.Types.Mixed, required: true}
 })
