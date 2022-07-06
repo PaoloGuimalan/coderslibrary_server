@@ -44,6 +44,7 @@ const Accounts = require("./schemas/accounts");
 const Recents = require("./schemas/recents");
 const Saves = require("./schemas/saves");
 const Tags = require("./schemas/tags");
+const Notifications = require("./schemas/notifications")
 const e = require("express");
 
 async function connectMongo(){
@@ -463,8 +464,29 @@ app.post('/postComment', jwtverifier, (req, res) => {
             dateposted: dateposted, 
             timeposted: timeposted
         })
+
+        const newNotif = new Notifications({
+            type: "tag",
+            from: "",
+            to: "",
+            content: "have tagged you on a book.",
+            date: dateposted,
+            time: timeposted,
+            linking: bookID
+        })
     
         newTag.save().then(() => {
+            mentionArr.map((accs, i) => {
+                new Notifications({
+                    type: "tag",
+                    from: userName,
+                    to: accs,
+                    content: `${userName} have tagged you on a book.`,
+                    date: dateposted,
+                    time: timeposted,
+                    linking: bookID
+                }).save()
+            })
             res.send({status: true, message: "Comment has been posted!"});
         })
 
