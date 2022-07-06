@@ -443,23 +443,17 @@ app.post('/postComment', jwtverifier, (req, res) => {
                 // console.log(result)
                 if(result){
                     // console.log(result.userName)
-                    mentionArr.push(result.userName)
+                    // mentionArr.push(result.userName)
+                    var mentionIndex = mentionArr.indexOf(result.userName);
+                    if(mentionIndex < 0){
+                        mentionArr.push(result.userName)
+                    }
                 }
             }
         })
     }
 
-    contentMentionCheck.split(" ").map((wrd, i) => {
-        if(wrd.split("")[0] == "@"){
-            var wordShift = wrd.split("")
-            wordShift.shift()
-            var wordShiftFinal = wordShift.join("")
-            // mentionArr.push(wordShiftFinal)
-            checkUser(wordShiftFinal)
-        }
-    })
-
-    setTimeout(() => {
+    const initiatePostComment = () => {
         const newTag = new Tags({
             userName: userName, 
             fullName: fullName, 
@@ -473,7 +467,46 @@ app.post('/postComment', jwtverifier, (req, res) => {
         newTag.save().then(() => {
             res.send({status: true, message: "Comment has been posted!"});
         })
-    }, 1000)
+
+        // res.send({
+        //     userName: userName, 
+        //     fullName: fullName, 
+        //     bookID: bookID, 
+        //     content: content,
+        //     mentions: mentionArr, 
+        //     dateposted: dateposted, 
+        //     timeposted: timeposted
+        // })
+    }
+
+    contentMentionCheck.split(" ").map((wrd, i) => {
+        var contentLength = contentMentionCheck.split(" ").length;
+        if(contentLength == i+1){
+            // console.log(true)
+            if(wrd.split("")[0] == "@"){
+                var wordShift = wrd.split("")
+                wordShift.shift()
+                var wordShiftFinal = wordShift.join("")
+                // mentionArr.push(wordShiftFinal)
+                checkUser(wordShiftFinal)
+            }
+            setTimeout(() => {
+                initiatePostComment()
+            }, 1000)
+            // console.log({contentLength, i})
+        }
+        else{
+            // console.log(false)
+            if(wrd.split("")[0] == "@"){
+                var wordShift = wrd.split("")
+                wordShift.shift()
+                var wordShiftFinal = wordShift.join("")
+                // mentionArr.push(wordShiftFinal)
+                checkUser(wordShiftFinal)
+            }
+        }
+        // console.log({contentLength, i})
+    })
     
     // const newTag = new Tags({
     //     userName: userName, 
