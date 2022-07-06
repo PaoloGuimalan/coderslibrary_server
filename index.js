@@ -556,3 +556,23 @@ app.get('/getComments/:bookID', (req, res) => {
         }
     })
 })
+
+app.get('/getActivityComments', jwtverifier, (req, res) => {
+    const userName = 'Paolo_12426';
+    
+    Tags.find({userName: userName}, (err, result) => {
+        if(err){
+            console.log(err)
+        }
+        else{
+            Tags.find({mentions: {$in: [userName]}}, (err2, result2) => {
+                if(err2){
+                    console.log(err2)
+                }
+                else{
+                    res.send({comments: result, mentionsYou: result2})
+                }
+            })
+        }
+    })
+})
