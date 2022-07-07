@@ -558,7 +558,7 @@ app.get('/getComments/:bookID', (req, res) => {
 })
 
 app.get('/getActivityComments', jwtverifier, (req, res) => {
-    const userName = 'Paolo_12426';
+    const userName = req.params.userName;
     
     Tags.find({userName: userName}, (err, result) => {
         if(err){
