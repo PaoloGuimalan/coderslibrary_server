@@ -595,3 +595,28 @@ app.get('/getActivityComments', jwtverifier, (req, res) => {
         }
     })
 })
+
+app.get('/getSaves', jwtverifier, (req, res) => {
+    const userName = req.params.userName;
+
+    Saves.find({userName: userName}, {bookID: 1}, (err, response) => {
+        if(err){
+            console.log(err);
+        }
+        else{
+            let arr = [];
+            response.map((id) => {
+                arr.push(id.bookID)
+            })
+            // res.send(arr);
+            Books.find({id: arr}, (err2, result2) => {
+                if(err2){
+                    console.log(err2)
+                }
+                else{
+                    res.send(result2);
+                }
+            })
+        }
+    })
+})
