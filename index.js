@@ -309,7 +309,26 @@ app.post('/addRecents', jwtverifier, (req, res) => {
         bookID: book_id
     })
 
-    newRecord.save()
+    Recents.find({bookID: book_id, userName: userName}, (err, result) => {
+        if(err){
+            console.log(err)
+        }
+        else{
+            if(result.length == 0){
+                newRecord.save()
+            }
+            else{
+                Recents.deleteOne({bookID: book_id, userName: userName}, (err2, result2) => {
+                    if(err2){
+                        console.log(err2)
+                    }
+                    else{
+                        newRecord.save()
+                    }
+                })
+            }
+        }
+    })
 })
 
 app.get('/userRecentsList', jwtverifier, (req, res) => {
