@@ -629,7 +629,7 @@ app.get('/getNotifications', jwtverifier, (req, res) => {
             console.log(err)
         }
         else{
-            res.send(result)
+            res.send(result.reverse())
         }
     })
 })
