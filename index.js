@@ -620,3 +620,16 @@ app.get('/getSaves', jwtverifier, (req, res) => {
         }
     })
 })
+
+app.get('/getNotifications', jwtverifier, (req, res) => {
+    const userName = req.params.userName;
+
+    Notifications.find({$or: [{to: userName, type: "tag"}, {type: "all"}]}, (err, result) => {
+        if(err){
+            console.log(err)
+        }
+        else{
+            res.send(result)
+        }
+    })
+})
